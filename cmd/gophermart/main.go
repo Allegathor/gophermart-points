@@ -6,6 +6,7 @@ import (
 	"gophermart-points/internal/repo/pgsql"
 	"gophermart-points/internal/srv"
 	"gophermart-points/internal/srv/external"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -42,7 +43,7 @@ func LoadConfig(path string) (cfg Config, err error) {
 
 	err = viper.ReadInConfig()
 	if err != nil {
-		return Config{}, err
+		slog.Warn("failed to read config from file")
 	}
 
 	err = viper.Unmarshal(&cfg)
@@ -99,7 +100,7 @@ func main() {
 	logger := initLogger("dev").Sugar()
 	cfg, err := LoadConfig("./")
 	if err != nil {
-		logger.Warn("failed to load config, cause: %s:", err.Error())
+		logger.Fatalf("failed to set config, cause: %s:", err.Error())
 	}
 
 	var db *pgsql.PgSQL
