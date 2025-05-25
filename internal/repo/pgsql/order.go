@@ -144,7 +144,7 @@ func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, err
 			defer rows.Close()
 
 			for rows.Next() {
-				o := entity.Order{}
+				var o entity.Order
 				err := rows.Scan(&o.UserId, &o.Num, &o.Amount, &o.PntsEvalStatus, &o.UploadAt)
 				if err != nil {
 					return err
