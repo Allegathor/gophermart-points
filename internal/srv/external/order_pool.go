@@ -55,13 +55,13 @@ func (op *OrderProcessing) Process(idx uint) {
 					case integration.StatusRegistered:
 						op.logger.Infow("nothing to update from accrual", "order", order, "res", res)
 					case integration.StatusProcessing:
-						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderID, entity.PointsEvalStatusProcessed)
+						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderID, entity.PointsEvalStatusProcessing)
 						if err != nil {
 							op.logger.Errorw(err.Error(), "order", order, "res", res)
 							ticker.Stop()
 							break outer
 						}
-						op.logger.Infow("update status from accrual service to PROCESSED", "order", order, "res", res)
+						op.logger.Infow("update status from accrual service to PROCESSING", "order", order, "res", res)
 					case integration.StatusInvalid:
 						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderID, entity.PointsEvalStatusInvalid)
 						if err != nil {

@@ -33,7 +33,7 @@ func init() {
 	pflag.StringP("RUN_ADDRESS", "a", "localhost:8080", "Address to run server on")
 	pflag.StringP("DATABASE_URI", "d", "", "DB connection string")
 	pflag.StringP("ACCRUAL_SYSTEM_ADDRESS", "r", "http://localhost:8081", "Address of accrual service")
-	pflag.StringP("AUTH_KEY", "k", "", "Authentication key")
+	pflag.StringP("AUTH_KEY", "k", "kkk", "Authentication key")
 }
 
 func LoadConfig(path string) (cfg Config, err error) {

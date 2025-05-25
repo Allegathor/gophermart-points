@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"fmt"
 	"gophermart-points/internal/entity"
 	"gophermart-points/internal/repo/pgsql"
 	"gophermart-points/pkg/checksum"
@@ -44,6 +43,7 @@ func (api *OrderAPI) RegOrder(c *gin.Context) {
 	order := entity.NewOrder(userID, num, 0)
 	exOrder, err := api.db.GetOrder(c, order.Num)
 	if err != nil && !errors.Is(err, pgsql.ErrNoOrder) {
+		api.logger.Errorln(err)
 		c.JSON(http.StatusInternalServerError, RsDef{Err: err.Error()})
 		return
 	}
@@ -60,6 +60,7 @@ func (api *OrderAPI) RegOrder(c *gin.Context) {
 
 	newID, err := api.db.AddOrder(c, *order)
 	if err != nil {
+		api.logger.Errorln(err)
 		c.JSON(http.StatusInternalServerError, RsDef{Err: InternalSeverErrMsg})
 		return
 	}
@@ -72,12 +73,13 @@ func (api *OrderAPI) RegOrder(c *gin.Context) {
 
 func (api *OrderAPI) Orders(c *gin.Context) {
 	userID := c.MustGet(UserIDKey).(int)
+
 	orders, err := api.db.GetOrders(c, userID)
 	if err != nil {
+		api.logger.Errorln(err)
 		c.JSON(http.StatusInternalServerError, RsDef{Err: InternalSeverErrMsg})
 		return
 	}
-	fmt.Println(orders)
 
 	sl := make([]OrderRec, 0)
 	for _, o := range orders {
