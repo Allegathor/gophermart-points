@@ -14,16 +14,16 @@ import (
 type Srv struct {
 	db     *pgsql.PgSQL
 	router *gin.Engine
-	log    *zap.SugaredLogger
+	logger *zap.SugaredLogger
 	http.Server
 }
 
-func New(addr string, db *pgsql.PgSQL, log *zap.SugaredLogger) *Srv {
+func New(addr string, db *pgsql.PgSQL, l *zap.SugaredLogger) *Srv {
 
 	return &Srv{
 		db:     db,
 		router: gin.Default(),
-		log:    log,
+		logger: l,
 		Server: http.Server{
 			Addr: addr,
 		},
@@ -31,7 +31,7 @@ func New(addr string, db *pgsql.PgSQL, log *zap.SugaredLogger) *Srv {
 }
 
 func (s *Srv) MountHandlers(authKey string, q *external.OrderProcessing) {
-	api := handlers.NewAPI(s.db)
+	api := handlers.NewAPI(s.db, s.logger)
 	orderAPI := handlers.NewOrderAPI(s.db, q)
 	userAPI := handlers.NewUserAPI(authKey, s.db)
 

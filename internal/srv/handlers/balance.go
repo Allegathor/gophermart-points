@@ -16,16 +16,18 @@ func (api *API) GetBalance(c *gin.Context) {
 
 	balance, err := api.db.GetBalance(c, userId)
 	if err != nil {
+		api.logger.Errorln(err)
 		c.JSON(http.StatusInternalServerError, RsDef{
-			Err: err.Error(),
+			Err: InternalSeverErrMsg,
 		})
 		return
 	}
 
 	withdrawn, err := api.db.GetWithdrawalSum(c, userId)
 	if err != nil {
+		api.logger.Errorln(err)
 		c.JSON(http.StatusInternalServerError, RsDef{
-			Err: err.Error(),
+			Err: InternalSeverErrMsg,
 		})
 		return
 	}
