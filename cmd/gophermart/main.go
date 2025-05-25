@@ -99,7 +99,7 @@ func main() {
 	logger := initLogger("dev").Sugar()
 	cfg, err := LoadConfig("./")
 	if err != nil {
-		logger.Fatalf("failed to load config, cause: %s:", err.Error())
+		logger.Warn("failed to load config, cause: %s:", err.Error())
 	}
 
 	var db *pgsql.PgSQL
