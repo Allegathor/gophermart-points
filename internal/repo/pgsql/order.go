@@ -149,7 +149,6 @@ func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, err
 				if err != nil {
 					return err
 				}
-				fmt.Println(o)
 				orders = append(orders, o)
 			}
 
@@ -160,6 +159,7 @@ func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, err
 		return orders, err
 	}
 
+	fmt.Println(orders)
 	return orders, nil
 }
 

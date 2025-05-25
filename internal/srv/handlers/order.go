@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"fmt"
 	"gophermart-points/internal/entity"
 	"gophermart-points/internal/repo/pgsql"
 	"gophermart-points/pkg/checksum"
@@ -87,7 +86,6 @@ func (api *OrderAPI) Orders(c *gin.Context) {
 		rec.UploadAt = o.UploadAt.Format(time.RFC3339)
 		sl = append(sl, rec)
 	}
-	fmt.Println(orders, sl)
 
 	c.JSON(http.StatusOK, sl)
 }
