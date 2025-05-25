@@ -45,7 +45,7 @@ func (pg *PgSQL) GetWithdrawalSum(ctx context.Context, userId int) (sum float64,
 }
 
 func (pg *PgSQL) GetWithdrawals(ctx context.Context, userId int) ([]entity.Withdrawal, error) {
-	var wls []entity.Withdrawal
+	wls := make([]entity.Withdrawal, 0)
 	err := pg.WithPolicy(
 		ctx,
 		func(c context.Context) error {
@@ -66,7 +66,7 @@ func (pg *PgSQL) GetWithdrawals(ctx context.Context, userId int) ([]entity.Withd
 			defer rows.Close()
 
 			for rows.Next() {
-				w := entity.Withdrawal{}
+				var w entity.Withdrawal
 				err := rows.Scan(&w.UserId, &w.Num, &w.Amount, &w.ProcAt)
 				if err != nil {
 					return err

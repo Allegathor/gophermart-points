@@ -125,7 +125,7 @@ func (pg *PgSQL) GetOrder(ctx context.Context, orderNum string) (entity.Order, e
 }
 
 func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, error) {
-	var orders []entity.Order
+	orders := make([]entity.Order, 0)
 	err := pg.WithPolicy(
 		ctx,
 		func(c context.Context) error {
@@ -149,6 +149,7 @@ func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, err
 				if err != nil {
 					return err
 				}
+				fmt.Println(o)
 				orders = append(orders, o)
 			}
 
