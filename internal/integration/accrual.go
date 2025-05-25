@@ -33,6 +33,8 @@ func NewInstance(addr string, logger *zap.SugaredLogger) *AccrualService {
 			delay := time.Second + time.Duration(attempt-1)*2*time.Second
 			logger.Infof("Retry attempt %d, waiting %v\n", attempt, delay)
 			switch r.StatusCode() {
+			case http.StatusNoContent:
+				delay = 2*time.Second + time.Duration(attempt-1)*2*time.Second
 			case http.StatusTooManyRequests:
 				ra, err := strconv.Atoi(r.Header().Get("Retry-After"))
 				if err != nil {
