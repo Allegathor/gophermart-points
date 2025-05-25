@@ -61,6 +61,11 @@ type WithdrawalRec struct {
 func (api *API) Withdrawals(c *gin.Context) {
 	userId := c.MustGet(USER_ID_KEY).(int)
 	wls, err := api.db.GetWithdrawals(c, userId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, RsDef{Err: err.Error()})
+		return
+	}
+
 	var sl []WithdrawalRec
 	for _, w := range wls {
 		rec := WithdrawalRec{}
@@ -68,10 +73,6 @@ func (api *API) Withdrawals(c *gin.Context) {
 		rec.Amount = math.Abs(w.Amount)
 		rec.ProcAt = w.ProcAt.Format(time.RFC3339)
 		sl = append(sl, rec)
-	}
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, RsDef{Err: err.Error()})
-		return
 	}
 
 	c.JSON(http.StatusOK, sl)
