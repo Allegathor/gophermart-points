@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres
+    container_name: postgres_gophermart_points
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 256mb
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_pa33word
+      POSTGRES_DB: postgres_db
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8079:8080
