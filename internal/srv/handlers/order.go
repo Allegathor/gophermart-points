@@ -77,7 +77,7 @@ func (api *OrderAPI) Orders(c *gin.Context) {
 		return
 	}
 
-	var sl []OrderRec
+	sl := make([]OrderRec, 0)
 	for _, o := range orders {
 		rec := OrderRec{}
 		rec.Num = o.Num

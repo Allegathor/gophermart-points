@@ -66,7 +66,7 @@ func (api *API) Withdrawals(c *gin.Context) {
 		return
 	}
 
-	var sl []WithdrawalRec
+	sl := make([]WithdrawalRec, 0)
 	for _, w := range wls {
 		rec := WithdrawalRec{}
 		rec.Num = w.Num
