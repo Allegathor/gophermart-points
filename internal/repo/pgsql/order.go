@@ -133,7 +133,7 @@ func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, err
 				SELECT user_id, order_num, amount, points_eval_status, uploaded_at  
 				FROM order_table
 				WHERE user_id = @id
-				AND amount > 0
+				AND amount >= 0
 				ORDER BY uploaded_at DESC
 			`,
 				pgx.NamedArgs{"id": userId},
