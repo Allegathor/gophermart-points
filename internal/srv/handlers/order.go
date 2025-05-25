@@ -79,7 +79,7 @@ func (api *OrderAPI) Orders(c *gin.Context) {
 
 	sl := make([]OrderRec, 0)
 	for _, o := range orders {
-		rec := OrderRec{}
+		var rec OrderRec
 		rec.Num = o.Num
 		rec.Amount = o.Amount
 		rec.Status = o.PntsEvalStatus
