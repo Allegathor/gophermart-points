@@ -44,7 +44,7 @@ func (op *OrderProcessing) Process(idx uint) {
 					res, err := op.Accrual.UpdateOrderStatus(order.Num)
 					if err != nil {
 						op.logger.Errorln(err)
-						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderId, entity.PointsEvalStatusInvalid)
+						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderID, entity.PointsEvalStatusInvalid)
 						if err != nil {
 							op.logger.Errorln(err)
 						}
@@ -55,7 +55,7 @@ func (op *OrderProcessing) Process(idx uint) {
 					case integration.StatusRegistered:
 						op.logger.Infow("nothing to update from accrual", "order", order, "res", res)
 					case integration.StatusProcessing:
-						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderId, entity.PointsEvalStatusProcessed)
+						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderID, entity.PointsEvalStatusProcessed)
 						if err != nil {
 							op.logger.Errorw(err.Error(), "order", order, "res", res)
 							ticker.Stop()
@@ -63,7 +63,7 @@ func (op *OrderProcessing) Process(idx uint) {
 						}
 						op.logger.Infow("update status from accrual service to PROCESSED", "order", order, "res", res)
 					case integration.StatusInvalid:
-						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderId, entity.PointsEvalStatusInvalid)
+						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderID, entity.PointsEvalStatusInvalid)
 						if err != nil {
 							op.logger.Errorw(err.Error(), "order", order, "res", res)
 							ticker.Stop()

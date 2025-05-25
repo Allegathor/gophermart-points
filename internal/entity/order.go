@@ -13,7 +13,7 @@ const (
 
 type Order struct {
 	UserID         int
-	OrderId        int
+	OrderID        int
 	Num            string
 	Amount         float64
 	PntsEvalStatus string

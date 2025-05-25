@@ -14,7 +14,7 @@ func AddTransactionQuery(pg PgDB, ctx context.Context, order entity.Order) error
 	`,
 		pgx.NamedArgs{
 			"id":      order.UserID,
-			"orderId": order.OrderId,
+			"orderId": order.OrderID,
 			"amount":  order.Amount,
 		},
 	)

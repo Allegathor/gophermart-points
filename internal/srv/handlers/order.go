@@ -64,7 +64,7 @@ func (api *OrderAPI) RegOrder(c *gin.Context) {
 		return
 	}
 
-	order.OrderId = newId
+	order.OrderID = newId
 	api.Queue.Push(*order)
 
 	c.JSON(http.StatusAccepted, RsDef{Err: ""})

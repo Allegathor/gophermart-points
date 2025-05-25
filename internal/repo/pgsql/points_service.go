@@ -80,14 +80,14 @@ func (pg *PgSQL) Withdraw(ctx context.Context, wd entity.Withdrawal) error {
 			if err != nil {
 				return err
 			}
-			order.OrderId = orderId
+			order.OrderID = orderId
 
 			err = AddTransactionQuery(tx, c, *order)
 			if err != nil {
 				return err
 			}
 
-			err = UpdateEvalPntsStatusQuery(tx, c, wd.UserID, order.OrderId, entity.PointsEvalStatusProcessed)
+			err = UpdateEvalPntsStatusQuery(tx, c, wd.UserID, order.OrderID, entity.PointsEvalStatusProcessed)
 			if err != nil {
 				return err
 			}
