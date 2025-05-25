@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	gophermartpoints "gophermart-points"
 	"gophermart-points/internal/repo/pgsql"
 	"gophermart-points/internal/srv"
 	"gophermart-points/internal/srv/external"
@@ -12,6 +13,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/pressly/goose/v3"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -103,14 +106,27 @@ func main() {
 		logger.Fatalf("failed to set config, cause: %s:", err.Error())
 	}
 
-	var db *pgsql.PgSQL
-	db, err = pgsql.Init(ctx, cfg.DBConn, logger)
+	var pgDB *pgsql.PgSQL
+	pgDB, err = pgsql.Init(ctx, cfg.DBConn, logger)
 	if err != nil {
 		logger.Fatalf("failed to init DB, cause: %s:", err.Error())
 	}
 
-	srv := srv.New(cfg.Address, db, logger)
-	orderPoolProc := external.NewOrderProcessing(ctx, db, cfg.AccrualAddress, 36, logger)
+	// GOOSE
+	db := stdlib.OpenDBFromPool(pgDB.Pool)
+	goose.SetBaseFS(gophermartpoints.EmbedMigrations)
+
+	if err := goose.SetDialect("postgres"); err != nil {
+		logger.Fatalln(err)
+	}
+
+	if err := goose.Up(db, "migrations"); err != nil {
+		logger.Fatalln(err)
+	}
+	db.Close()
+
+	srv := srv.New(cfg.Address, pgDB, logger)
+	orderPoolProc := external.NewOrderProcessing(ctx, pgDB, cfg.AccrualAddress, 36, logger)
 	srv.MountHandlers(cfg.AuthKey, orderPoolProc)
 
 	g, gCtx := errgroup.WithContext(ctx)
@@ -122,7 +138,7 @@ func main() {
 		<-gCtx.Done()
 		timeoutCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 		defer cancel()
-		db.Close()
+		pgDB.Close()
 
 		go func() error {
 			<-timeoutCtx.Done()
