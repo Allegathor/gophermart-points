@@ -10,7 +10,7 @@ import (
 
 func GetWithdrawalSumQuery(pg PgDB, ctx context.Context, userId int) (sum float64, err error) {
 	row := pg.QueryRow(ctx, `
-		SELECT SUM(amount) FROM transaction_table
+		SELECT COALESCE(SUM(amount), 0) FROM transaction_table
 		WHERE user_id = @id
 		AND amount < 0
 	`,
