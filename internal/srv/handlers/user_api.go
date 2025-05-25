@@ -10,10 +10,14 @@ import (
 const USER_COOKIE_NAME = "gmp_auth"
 
 var (
-	gu        = galidator.New()
+	gu = galidator.New()
+	// userValid = gu.ComplexValidator(galidator.Rules{
+	// 	"Login": gu.R("login").Regex("[A-Za-z0-9_]").Required().Min(3).Max(32),
+	// 	"Pwd":   gu.R("password").Required().Password(),
+	// })
 	userValid = gu.ComplexValidator(galidator.Rules{
-		"Login": gu.R("login").Regex("[A-Za-z0-9_]").Required().Min(3).Max(32),
-		"Pwd":   gu.R("password").Required().Password(),
+		"Login": gu.R("login").Required().Min(3).Max(32),
+		"Pwd":   gu.R("password").Required(),
 	})
 )
 
