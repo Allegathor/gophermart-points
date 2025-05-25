@@ -3,6 +3,7 @@ package pgsql
 import (
 	"context"
 	"errors"
+	"fmt"
 	"gophermart-points/internal/entity"
 
 	"github.com/jackc/pgx/v5"
@@ -148,6 +149,7 @@ func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, err
 				if err != nil {
 					return err
 				}
+				fmt.Println(o)
 				orders = append(orders, o)
 			}
 
