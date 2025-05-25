@@ -58,7 +58,7 @@ func (accr *AccrualService) UpdateOrderStatus(num string) (UpdateResult, error) 
 	var res UpdateResult
 	_, err := accr.Client.R().
 		SetResult(&res).
-		Get("http://" + accr.addr + "/api/orders/" + num)
+		Get(accr.addr + "/api/orders/" + num)
 
 	if err != nil {
 		return res, err
