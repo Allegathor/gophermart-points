@@ -10,11 +10,11 @@ import (
 func AddTransactionQuery(pg PgDB, ctx context.Context, order entity.Order) error {
 	_, err := pg.Exec(ctx, `
 		INSERT INTO transaction_table (user_id, order_id, amount)
-		VALUES(@id, @orderId, @amount)
+		VALUES(@id, @orderID, @amount)
 	`,
 		pgx.NamedArgs{
 			"id":      order.UserID,
-			"orderId": order.OrderID,
+			"orderID": order.OrderID,
 			"amount":  order.Amount,
 		},
 	)

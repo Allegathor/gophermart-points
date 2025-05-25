@@ -35,12 +35,12 @@ func UpdateEvalPntsStatusQuery(pg PgDB, ctx context.Context, userID int, orderID
 	_, err := pg.Exec(ctx, `
 		UPDATE order_table	
 		SET points_eval_status = @s
-		WHERE user_id = @userID AND order_id = @orderId
+		WHERE user_id = @userID AND order_id = @orderID
 		RETURNING order_id;
 	`,
 		pgx.NamedArgs{
 			"userID":  userID,
-			"orderId": orderID,
+			"orderID": orderID,
 			"s":       status,
 		},
 	)
@@ -55,12 +55,12 @@ func UpdateEvalPntsQuery(pg PgDB, ctx context.Context, order entity.Order) error
 	_, err := pg.Exec(ctx, `
 		UPDATE order_table	
 		SET amount = @amount, points_eval_status = @s
-		WHERE user_id = @userID AND order_id = @orderId
+		WHERE user_id = @userID AND order_id = @orderID
 		RETURNING order_id;
 	`,
 		pgx.NamedArgs{
 			"userID":  order.UserID,
-			"orderId": order.OrderID,
+			"orderID": order.OrderID,
 			"amount":  order.Amount,
 			"s":       order.PntsEvalStatus,
 		},

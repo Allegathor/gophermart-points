@@ -35,7 +35,7 @@ func RestrictJSON() gin.HandlerFunc {
 
 func CheckAuth(authKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		unparsed, err := c.Cookie(handlers.USER_COOKIE_NAME)
+		unparsed, err := c.Cookie(handlers.UserCookieName)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, handlers.RsDef{
 				Err: "Unauthorized",

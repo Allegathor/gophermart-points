@@ -7,7 +7,7 @@ import (
 	"github.com/golodash/galidator/v2"
 )
 
-const USER_COOKIE_NAME = "gmp_auth"
+const UserCookieName = "gmp_auth"
 
 var (
 	gu = galidator.New()
