@@ -69,6 +69,6 @@ func (api *UserAPI) UserReg(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie(UserCookieName, tn, int(datacrypt.TOKEN_EXP), "api/user/", "localhost", false, true)
+	c.SetCookie(UserCookieName, tn, int(datacrypt.TokenExp), "api/user/", "localhost", false, true)
 	c.JSON(http.StatusOK, RsUser{Err: "", FieldErrs: nil})
 }

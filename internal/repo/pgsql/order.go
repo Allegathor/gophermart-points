@@ -72,11 +72,11 @@ func UpdateEvalPntsQuery(pg PgDB, ctx context.Context, order entity.Order) error
 	return nil
 }
 
-func (pg *PgSQL) AddOrder(ctx context.Context, order entity.Order) (orderId int, err error) {
+func (pg *PgSQL) AddOrder(ctx context.Context, order entity.Order) (orderID int, err error) {
 	err = pg.WithPolicy(
 		ctx,
 		func(ctx context.Context) error {
-			orderId, err = AddOrderQuery(pg, ctx, order)
+			orderID, err = AddOrderQuery(pg, ctx, order)
 			if err != nil {
 				return err
 			}
@@ -89,7 +89,7 @@ func (pg *PgSQL) AddOrder(ctx context.Context, order entity.Order) (orderId int,
 		return -1, err
 	}
 
-	return orderId, nil
+	return orderID, nil
 }
 
 func (pg *PgSQL) GetOrder(ctx context.Context, orderNum string) (entity.Order, error) {

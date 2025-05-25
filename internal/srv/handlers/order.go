@@ -58,13 +58,13 @@ func (api *OrderAPI) RegOrder(c *gin.Context) {
 		return
 	}
 
-	newId, err := api.db.AddOrder(c, *order)
+	newID, err := api.db.AddOrder(c, *order)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, RsDef{Err: InternalSeverErrMsg})
 		return
 	}
 
-	order.OrderID = newId
+	order.OrderID = newID
 	api.Queue.Push(*order)
 
 	c.JSON(http.StatusAccepted, RsDef{Err: ""})

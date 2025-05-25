@@ -21,8 +21,8 @@ func CheckPassword(pwd string, hpwd string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hpwd), []byte(pwd))
 }
 
-const TOKEN_EXP = time.Hour * 2
-const MAX_AGE = 3600 * 2
+const TokenExp = time.Hour * 2
+const MaxAge = 3600 * 2
 
 type Claims struct {
 	jwt.RegisteredClaims
@@ -32,7 +32,7 @@ type Claims struct {
 func BuildUserJWT(id int, key string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TOKEN_EXP)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenExp)),
 		},
 		userID: id,
 	})
@@ -40,7 +40,7 @@ func BuildUserJWT(id int, key string) (string, error) {
 	return token.SignedString([]byte(key))
 }
 
-func GetuserID(unparsed string, key string) (int, error) {
+func GetUserID(unparsed string, key string) (int, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(unparsed, claims,
 		func(t *jwt.Token) (any, error) {

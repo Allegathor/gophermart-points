@@ -76,11 +76,11 @@ func (pg *PgSQL) Withdraw(ctx context.Context, wd entity.Withdrawal) error {
 			}
 
 			order := entity.NewOrder(wd.UserID, wd.Num, wd.Amount)
-			orderId, err := AddOrderQuery(tx, c, *order)
+			orderID, err := AddOrderQuery(tx, c, *order)
 			if err != nil {
 				return err
 			}
-			order.OrderID = orderId
+			order.OrderID = orderID
 
 			err = AddTransactionQuery(tx, c, *order)
 			if err != nil {

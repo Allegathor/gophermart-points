@@ -73,7 +73,7 @@ func (pg *PgSQL) GetUser(ctx context.Context, login string) (u entity.User, err 
 				WHERE login = @l;
 			`,
 				pgx.NamedArgs{"l": login},
-			).Scan(&u.Id, &u.Login, &u.Pwd)
+			).Scan(&u.ID, &u.Login, &u.Pwd)
 
 			return err
 		},
