@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"gophermart-points/internal/entity"
 	"gophermart-points/internal/repo/pgsql"
 	"gophermart-points/pkg/checksum"
@@ -76,6 +77,7 @@ func (api *OrderAPI) Orders(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, RsDef{Err: InternalSeverErrMsg})
 		return
 	}
+	fmt.Println(orders)
 
 	sl := make([]OrderRec, 0)
 	for _, o := range orders {
