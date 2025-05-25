@@ -13,7 +13,7 @@ func AddTransactionQuery(pg PgDB, ctx context.Context, order entity.Order) error
 		VALUES(@id, @orderId, @amount)
 	`,
 		pgx.NamedArgs{
-			"id":      order.UserId,
+			"id":      order.UserID,
 			"orderId": order.OrderId,
 			"amount":  order.Amount,
 		},

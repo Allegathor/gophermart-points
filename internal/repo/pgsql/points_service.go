@@ -7,11 +7,11 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func GetBalanceQuery(pg PgDB, ctx context.Context, userId int) (sum float64, err error) {
+func GetBalanceQuery(pg PgDB, ctx context.Context, userID int) (sum float64, err error) {
 	row := pg.QueryRow(ctx, `
 		SELECT * FROM get_current_user_balance(@id);
 	`,
-		pgx.NamedArgs{"id": userId},
+		pgx.NamedArgs{"id": userID},
 	)
 
 	err = row.Scan(&sum)
@@ -22,11 +22,11 @@ func GetBalanceQuery(pg PgDB, ctx context.Context, userId int) (sum float64, err
 	return sum, nil
 }
 
-func (pg *PgSQL) GetBalance(ctx context.Context, userId int) (sum float64, err error) {
+func (pg *PgSQL) GetBalance(ctx context.Context, userID int) (sum float64, err error) {
 	err = pg.WithPolicy(
 		ctx,
 		func(ctx context.Context) error {
-			sum, err = GetBalanceQuery(pg, ctx, userId)
+			sum, err = GetBalanceQuery(pg, ctx, userID)
 			if err != nil {
 				return err
 			}
@@ -47,7 +47,7 @@ func (pg *PgSQL) Accrue(ctx context.Context, order entity.Order) error {
 		pgx.TxOptions{AccessMode: pgx.ReadWrite},
 		func(tx pgx.Tx, c context.Context) error {
 
-			order.PntsEvalStatus = entity.POINTS_EVAL_STATUS_PROCESSED
+			order.PntsEvalStatus = entity.PointsEvalStatusProcessed
 			err := UpdateEvalPntsQuery(tx, c, order)
 			if err != nil {
 				return err
@@ -68,14 +68,14 @@ func (pg *PgSQL) Withdraw(ctx context.Context, wd entity.Withdrawal) error {
 		ctx,
 		pgx.TxOptions{AccessMode: pgx.ReadWrite},
 		func(tx pgx.Tx, c context.Context) error {
-			balance, err := GetBalanceQuery(tx, c, wd.UserId)
+			balance, err := GetBalanceQuery(tx, c, wd.UserID)
 			if err != nil {
 				return err
 			} else if wd.AbsAmount > balance {
 				return ErrInsufficentFunds
 			}
 
-			order := entity.NewOrder(wd.UserId, wd.Num, wd.Amount)
+			order := entity.NewOrder(wd.UserID, wd.Num, wd.Amount)
 			orderId, err := AddOrderQuery(tx, c, *order)
 			if err != nil {
 				return err
@@ -87,7 +87,7 @@ func (pg *PgSQL) Withdraw(ctx context.Context, wd entity.Withdrawal) error {
 				return err
 			}
 
-			err = UpdateEvalPntsStatusQuery(tx, c, wd.UserId, order.OrderId, entity.POINTS_EVAL_STATUS_PROCESSED)
+			err = UpdateEvalPntsStatusQuery(tx, c, wd.UserID, order.OrderId, entity.PointsEvalStatusProcessed)
 			if err != nil {
 				return err
 			}

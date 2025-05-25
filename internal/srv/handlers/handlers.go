@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap"
 )
 
-const USER_ID_KEY = "userId"
+const UserIDKey = "userID"
 
 type RsDef struct {
 	Err string `json:"error"`

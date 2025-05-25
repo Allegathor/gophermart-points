@@ -44,7 +44,7 @@ func CheckAuth(authKey string) gin.HandlerFunc {
 			return
 		}
 
-		userId, err := datacrypt.GetUserID(unparsed, authKey)
+		userID, err := datacrypt.GetuserID(unparsed, authKey)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, handlers.RsDef{
 				Err: "Unauthorized",
@@ -53,7 +53,7 @@ func CheckAuth(authKey string) gin.HandlerFunc {
 			return
 		}
 
-		c.Set(handlers.USER_ID_KEY, userId)
+		c.Set(handlers.UserIDKey, userID)
 
 		c.Next()
 	}

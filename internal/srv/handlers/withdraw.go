@@ -35,8 +35,8 @@ func (api *API) Withdraw(c *gin.Context) {
 		return
 	}
 
-	userId := c.MustGet(USER_ID_KEY).(int)
-	w.UserId = userId
+	userID := c.MustGet(UserIDKey).(int)
+	w.UserID = userID
 	w.Amount = -w.AbsAmount
 
 	err := api.db.Withdraw(c, w)
@@ -59,8 +59,8 @@ type WithdrawalRec struct {
 }
 
 func (api *API) Withdrawals(c *gin.Context) {
-	userId := c.MustGet(USER_ID_KEY).(int)
-	wls, err := api.db.GetWithdrawals(c, userId)
+	userID := c.MustGet(UserIDKey).(int)
+	wls, err := api.db.GetWithdrawals(c, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, RsDef{Err: err.Error()})
 		return

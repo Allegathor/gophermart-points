@@ -26,7 +26,7 @@ const MAX_AGE = 3600 * 2
 
 type Claims struct {
 	jwt.RegisteredClaims
-	UserID int
+	userID int
 }
 
 func BuildUserJWT(id int, key string) (string, error) {
@@ -34,13 +34,13 @@ func BuildUserJWT(id int, key string) (string, error) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TOKEN_EXP)),
 		},
-		UserID: id,
+		userID: id,
 	})
 
 	return token.SignedString([]byte(key))
 }
 
-func GetUserID(unparsed string, key string) (int, error) {
+func GetuserID(unparsed string, key string) (int, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(unparsed, claims,
 		func(t *jwt.Token) (any, error) {
@@ -55,5 +55,5 @@ func GetUserID(unparsed string, key string) (int, error) {
 		return -1, errors.New("token is not valid")
 	}
 
-	return claims.UserID, nil
+	return claims.userID, nil
 }

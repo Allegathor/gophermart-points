@@ -5,14 +5,14 @@ import (
 )
 
 const (
-	POINTS_EVAL_STATUS_NEW        = "NEW"
-	POINTS_EVAL_STATUS_PROCESSING = "PROCESSING"
-	POINTS_EVAL_STATUS_PROCESSED  = "PROCESSED"
-	POINTS_EVAL_STATUS_INVALID    = "INVALID"
+	PointsEvalStatusNew        = "NEW"
+	PointsEvalStatusProcessing = "PROCESSING"
+	PointsEvalStatusProcessed  = "PROCESSED"
+	PointsEvalStatusInvalid    = "INVALID"
 )
 
 type Order struct {
-	UserId         int
+	UserID         int
 	OrderId        int
 	Num            string
 	Amount         float64
@@ -22,9 +22,9 @@ type Order struct {
 
 func NewOrder(id int, num string, amount float64) *Order {
 	return &Order{
-		UserId:         id,
+		UserID:         id,
 		Num:            num,
 		Amount:         amount,
-		PntsEvalStatus: POINTS_EVAL_STATUS_NEW,
+		PntsEvalStatus: PointsEvalStatusNew,
 	}
 }

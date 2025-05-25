@@ -12,9 +12,9 @@ type RsBalance struct {
 }
 
 func (api *API) GetBalance(c *gin.Context) {
-	userId := c.MustGet(USER_ID_KEY).(int)
+	userID := c.MustGet(UserIDKey).(int)
 
-	balance, err := api.db.GetBalance(c, userId)
+	balance, err := api.db.GetBalance(c, userID)
 	if err != nil {
 		api.logger.Errorln(err)
 		c.JSON(http.StatusInternalServerError, RsDef{
@@ -23,7 +23,7 @@ func (api *API) GetBalance(c *gin.Context) {
 		return
 	}
 
-	withdrawn, err := api.db.GetWithdrawalSum(c, userId)
+	withdrawn, err := api.db.GetWithdrawalSum(c, userID)
 	if err != nil {
 		api.logger.Errorln(err)
 		c.JSON(http.StatusInternalServerError, RsDef{

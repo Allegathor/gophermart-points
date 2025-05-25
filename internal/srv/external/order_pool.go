@@ -44,7 +44,7 @@ func (op *OrderProcessing) Process(idx uint) {
 					res, err := op.Accrual.UpdateOrderStatus(order.Num)
 					if err != nil {
 						op.logger.Errorln(err)
-						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserId, order.OrderId, entity.POINTS_EVAL_STATUS_INVALID)
+						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderId, entity.PointsEvalStatusInvalid)
 						if err != nil {
 							op.logger.Errorln(err)
 						}
@@ -52,18 +52,18 @@ func (op *OrderProcessing) Process(idx uint) {
 						break outer
 					}
 					switch res.Status {
-					case integration.STATUS_REGISTERED:
+					case integration.StatusRegistered:
 						op.logger.Infow("nothing to update from accrual", "order", order, "res", res)
-					case integration.STATUS_PROCESSING:
-						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserId, order.OrderId, entity.POINTS_EVAL_STATUS_PROCESSED)
+					case integration.StatusProcessing:
+						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderId, entity.PointsEvalStatusProcessed)
 						if err != nil {
 							op.logger.Errorw(err.Error(), "order", order, "res", res)
 							ticker.Stop()
 							break outer
 						}
 						op.logger.Infow("update status from accrual service to PROCESSED", "order", order, "res", res)
-					case integration.STATUS_INVALID:
-						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserId, order.OrderId, entity.POINTS_EVAL_STATUS_INVALID)
+					case integration.StatusInvalid:
+						err := op.db.UpdateEvalPntsStatus(op.ctx, order.UserID, order.OrderId, entity.PointsEvalStatusInvalid)
 						if err != nil {
 							op.logger.Errorw(err.Error(), "order", order, "res", res)
 							ticker.Stop()
@@ -72,7 +72,7 @@ func (op *OrderProcessing) Process(idx uint) {
 						op.logger.Infow("update status from accrual service to INVALID", "order", order, "res", res)
 						ticker.Stop()
 						break outer
-					case integration.STATUS_PROCESSED:
+					case integration.StatusProcessed:
 						order.Amount = res.Amount
 						err := op.db.Accrue(op.ctx, order)
 						if err != nil {

@@ -16,7 +16,7 @@ func AddOrderQuery(pg PgDB, ctx context.Context, order entity.Order) (orderId in
 		RETURNING order_id;
 	`,
 		pgx.NamedArgs{
-			"id":     order.UserId,
+			"id":     order.UserID,
 			"num":    order.Num,
 			"amount": order.Amount,
 			"status": order.PntsEvalStatus,
@@ -31,15 +31,15 @@ func AddOrderQuery(pg PgDB, ctx context.Context, order entity.Order) (orderId in
 	return orderId, nil
 }
 
-func UpdateEvalPntsStatusQuery(pg PgDB, ctx context.Context, userId int, orderId int, status string) error {
+func UpdateEvalPntsStatusQuery(pg PgDB, ctx context.Context, userID int, orderId int, status string) error {
 	_, err := pg.Exec(ctx, `
 		UPDATE order_table	
 		SET points_eval_status = @s
-		WHERE user_id = @userId AND order_id = @orderId
+		WHERE user_id = @userID AND order_id = @orderId
 		RETURNING order_id;
 	`,
 		pgx.NamedArgs{
-			"userId":  userId,
+			"userID":  userID,
 			"orderId": orderId,
 			"s":       status,
 		},
@@ -55,11 +55,11 @@ func UpdateEvalPntsQuery(pg PgDB, ctx context.Context, order entity.Order) error
 	_, err := pg.Exec(ctx, `
 		UPDATE order_table	
 		SET amount = @amount, points_eval_status = @s
-		WHERE user_id = @userId AND order_id = @orderId
+		WHERE user_id = @userID AND order_id = @orderId
 		RETURNING order_id;
 	`,
 		pgx.NamedArgs{
-			"userId":  order.UserId,
+			"userID":  order.UserID,
 			"orderId": order.OrderId,
 			"amount":  order.Amount,
 			"s":       order.PntsEvalStatus,
@@ -105,7 +105,7 @@ func (pg *PgSQL) GetOrder(ctx context.Context, orderNum string) (entity.Order, e
 				pgx.NamedArgs{"num": orderNum},
 			)
 
-			err := row.Scan(&order.UserId, &order.OrderId, &order.Num, &order.Amount, &order.PntsEvalStatus)
+			err := row.Scan(&order.UserID, &order.OrderId, &order.Num, &order.Amount, &order.PntsEvalStatus)
 			if err != nil {
 				return err
 			}
@@ -124,7 +124,7 @@ func (pg *PgSQL) GetOrder(ctx context.Context, orderNum string) (entity.Order, e
 	return order, nil
 }
 
-func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, error) {
+func (pg *PgSQL) GetOrders(ctx context.Context, userID int) ([]entity.Order, error) {
 	orders := make([]entity.Order, 0)
 	err := pg.WithPolicy(
 		ctx,
@@ -136,7 +136,7 @@ func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, err
 				AND amount >= 0
 				ORDER BY uploaded_at DESC
 			`,
-				pgx.NamedArgs{"id": userId},
+				pgx.NamedArgs{"id": userID},
 			)
 			if err != nil {
 				return err
@@ -145,7 +145,7 @@ func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, err
 
 			for rows.Next() {
 				var o entity.Order
-				err := rows.Scan(&o.UserId, &o.Num, &o.Amount, &o.PntsEvalStatus, &o.UploadAt)
+				err := rows.Scan(&o.UserID, &o.Num, &o.Amount, &o.PntsEvalStatus, &o.UploadAt)
 				if err != nil {
 					return err
 				}
@@ -164,11 +164,11 @@ func (pg *PgSQL) GetOrders(ctx context.Context, userId int) ([]entity.Order, err
 	return orders, nil
 }
 
-func (pg *PgSQL) UpdateEvalPntsStatus(ctx context.Context, userId int, orderId int, status string) error {
+func (pg *PgSQL) UpdateEvalPntsStatus(ctx context.Context, userID int, orderId int, status string) error {
 	return pg.WithPolicy(
 		ctx,
 		func(ctx context.Context) error {
-			return UpdateEvalPntsStatusQuery(pg, ctx, userId, orderId, status)
+			return UpdateEvalPntsStatusQuery(pg, ctx, userID, orderId, status)
 		},
 	)
 }

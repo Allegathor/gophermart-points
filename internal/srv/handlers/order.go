@@ -40,8 +40,8 @@ func (api *OrderAPI) RegOrder(c *gin.Context) {
 		return
 	}
 
-	userId := c.MustGet(USER_ID_KEY).(int)
-	order := entity.NewOrder(userId, num, 0)
+	userID := c.MustGet(UserIDKey).(int)
+	order := entity.NewOrder(userID, num, 0)
 	exOrder, err := api.db.GetOrder(c, order.Num)
 	if err != nil && !errors.Is(err, pgsql.ErrNoOrder) {
 		c.JSON(http.StatusInternalServerError, RsDef{Err: err.Error()})
@@ -49,7 +49,7 @@ func (api *OrderAPI) RegOrder(c *gin.Context) {
 	}
 
 	if order.Num == exOrder.Num {
-		if order.UserId == exOrder.UserId {
+		if order.UserID == exOrder.UserID {
 			c.JSON(http.StatusOK, RsDef{Err: ""})
 			return
 		}
@@ -71,8 +71,8 @@ func (api *OrderAPI) RegOrder(c *gin.Context) {
 }
 
 func (api *OrderAPI) Orders(c *gin.Context) {
-	userId := c.MustGet(USER_ID_KEY).(int)
-	orders, err := api.db.GetOrders(c, userId)
+	userID := c.MustGet(UserIDKey).(int)
+	orders, err := api.db.GetOrders(c, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, RsDef{Err: InternalSeverErrMsg})
 		return

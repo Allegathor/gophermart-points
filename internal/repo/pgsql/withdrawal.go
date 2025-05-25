@@ -8,13 +8,13 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func GetWithdrawalSumQuery(pg PgDB, ctx context.Context, userId int) (sum float64, err error) {
+func GetWithdrawalSumQuery(pg PgDB, ctx context.Context, userID int) (sum float64, err error) {
 	row := pg.QueryRow(ctx, `
 		SELECT COALESCE(SUM(amount), 0) FROM transaction_table
 		WHERE user_id = @id
 		AND amount < 0
 	`,
-		pgx.NamedArgs{"id": userId},
+		pgx.NamedArgs{"id": userID},
 	)
 
 	err = row.Scan(&sum)
@@ -25,11 +25,11 @@ func GetWithdrawalSumQuery(pg PgDB, ctx context.Context, userId int) (sum float6
 	return sum, nil
 }
 
-func (pg *PgSQL) GetWithdrawalSum(ctx context.Context, userId int) (sum float64, err error) {
+func (pg *PgSQL) GetWithdrawalSum(ctx context.Context, userID int) (sum float64, err error) {
 	err = pg.WithPolicy(
 		ctx,
 		func(ctx context.Context) error {
-			sum, err = GetWithdrawalSumQuery(pg, ctx, userId)
+			sum, err = GetWithdrawalSumQuery(pg, ctx, userID)
 			if err != nil {
 				return err
 			}
@@ -44,7 +44,7 @@ func (pg *PgSQL) GetWithdrawalSum(ctx context.Context, userId int) (sum float64,
 	return math.Abs(sum), nil
 }
 
-func (pg *PgSQL) GetWithdrawals(ctx context.Context, userId int) ([]entity.Withdrawal, error) {
+func (pg *PgSQL) GetWithdrawals(ctx context.Context, userID int) ([]entity.Withdrawal, error) {
 	wls := make([]entity.Withdrawal, 0)
 	err := pg.WithPolicy(
 		ctx,
@@ -58,7 +58,7 @@ func (pg *PgSQL) GetWithdrawals(ctx context.Context, userId int) ([]entity.Withd
 					AND tt.amount < 0
 				ORDER BY processed_at DESC;
 			`,
-				pgx.NamedArgs{"id": userId},
+				pgx.NamedArgs{"id": userID},
 			)
 			if err != nil {
 				return err
@@ -67,7 +67,7 @@ func (pg *PgSQL) GetWithdrawals(ctx context.Context, userId int) ([]entity.Withd
 
 			for rows.Next() {
 				var w entity.Withdrawal
-				err := rows.Scan(&w.UserId, &w.Num, &w.Amount, &w.ProcAt)
+				err := rows.Scan(&w.UserID, &w.Num, &w.Amount, &w.ProcAt)
 				if err != nil {
 					return err
 				}
